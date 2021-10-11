@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Create a blog post
+{% endblock title %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <h1><i class="fas fa-h1    ">Add Catagory..</i></h1>
+    <br><br>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-secondary">Add</button>
+{% else %}
+    You are not authenticated(then why you want came here for hacking...!!)
+{% endif %}
+{% endblock %}

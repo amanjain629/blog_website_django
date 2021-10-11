@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% if catagory_posts %}
+
+<h1><i class="fas fa-h1    ">{{ cats }}</i></h1>
+<ul>
+{% for x in catagory_posts %}
+    <li>
+        <a href="{% url 'article-detail' x.pk %}">{{ x.title }}</a> - {{ x.author }}
+        {% if user.is_authenticated %}
+        <small>
+            <a href="{% url 'edit-post' x.pk %}">(Edit)</a> 
+            <a href="{% url 'delete-post' x.pk %}">(Delete)</a>
+        </small>
+        {% endif %}
+        <br>
+        {{ x.body|slice:':300'|safe }}....
+    </li>
+    <br>
+{% endfor %}
+</ul>
+{% else %}
+    <h2>Sorry this page does not exists..</h2>
+{% endif %}
+
+{% endblock %}

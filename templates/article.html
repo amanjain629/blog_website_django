@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {{ post.title_tag }}
+{% endblock title %}
+{% block content %}
+
+<h1><i class="fas fa-h1    ">{{ post.title }}</i></h1>
+
+<small>
+    By: {{ post.author.first_name }} 
+    {{ post.author.last_name }} - <a href="{% url 'catagory' post.catagory|slugify %}">{{post.catagory}}</a>
+    {{ post.date_post }}
+    {% if user.is_authenticated %}
+        {% if user.id == post.author.id %}
+            <a href="{% url 'edit-post' post.pk %}">(Edit)</a> 
+            <a href="{% url 'delete-post' post.pk %}">(Delete)</a>
+        {% endif %}
+    {% endif %}
+</small><br>
+<hr>
+<br>
+
+{% if post.header_image %}
+    <img src='{{ post.header_image.url }}'>
+{% endif %}
+
+{{ post.body|safe }}
+
+<br><br>
+<a href='{% url 'index' %}' class="btn btn-secondary">Back</a>
+
+<br><br>
+<hr>
+
+<form action="{% url 'like-post' post.pk %}" method="POST">
+    {% csrf_token %}
+
+    {% if liked %}
+        <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-danger btn-sm">Unlike</button>
+    {% else %}
+        <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-primary btn-sm">Like</button> 
+        
+    {% endif %}
+    - {{ total_likes }} Likes
+</form>
+
+<br><br>
+
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-2">
+    {% if post.author.profile.profile_pic %}
+        <img src="{{ post.author.profile.profile_pic.url }}" class='card-img'alt="...">
+    {% else %}
+        <img src="{% static 'images\faceless.jpg' %}" class="card-img">
+    {% endif %}
+    </div>
+    <div class="col-md-10">
+      <div class="card-body">
+        <h5 class="card-title">{{ post.author.first_name }} {{ post.author.last_name }}</h5>
+        <p class='small text-muted'>
+            
+            {% if post.author.profile.website_url %}
+                <a href="{{ post.author.profile.website_url }}"><i class="fa fa-facebook" aria-hidden="true">website</i></a>
+            {% endif %}
+
+            {% if post.author.profile.fb_url %}
+                | <a href="{{ post.author.profile.fb_url }}"><i class="fa fa-facebook" aria-hidden="true">facebook</i></a>
+            {% endif %}
+
+            {% if post.author.profile.twitter_url %}
+                | <a href="{{ post.author.profile.twitter_url }}"><i class="fa fa-instagram" aria-hidden="true">instagram</i></a>
+            {% endif %}
+
+            {% if post.author.profile.instagram_url %}
+                | <a href="{{ post.author.profile.instagram_url }}"><i class="fa fa-twitter" aria-hidden="true">twitter</i></a>
+            {% endif %}
+
+            {% if post.author.profile.pinterest_url %}
+                | <a href="{{ post.author.profile.pinterest_url }}"><i class="fa fa-pinterest" aria-hidden="true">pinterest</i></a>
+            {% endif %}
+
+        </p>
+        <p class="card-text">{{ post.author.profile.bio }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
